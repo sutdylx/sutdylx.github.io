@@ -22,7 +22,7 @@ var Propnumber=3
 var CPN=0
 var hit=false
 var radius=10
-var name=prompt('Please enter you name','')
+var name=prompt('Please enter you name!','')
 var drawScore = function () {
 score=CPN-props.locations.length
 ctx.font = "20px Courier";
@@ -208,7 +208,7 @@ var props=new Props()
 $('body').keydown(function(){
     var a=event.keyCode;
     if (a>=49 && a<=57){
-    barriers.speed=0.2*0.1*parseInt(Speeds[event.keyCode])
+    barriers.speed=0.1*parseInt(Speeds[event.keyCode])
      }
 })
 alert('ATTENTION! Game will start immediately,please keep you mouse at the bottom, or you may easily fail')
