@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+              <html>
+              <head>
+                  <title>Final Project</title>
+              </head>
+              <body>
+                  <canvas id="canvas" width="400" height="500" onmousemove="mousemove(event)"></canvas>
+                  <script src="https://code.jquery.com/jquery-2.1.0.js"></script>
+<script>
+var canvas = document.getElementById("canvas"); 
+var ctx = canvas.getContext("2d");
+var width = canvas.width; 
+var height = canvas.height;
+var blockSize = 10;
+var widthOfBar = 50 
+var heightOfBar = 10
+var score = 0;
+var Speeds={49:'8',50:'9',51:'10',52:'11',53:'12',54:'13',55:'14',56:'15',57:'16'}
+var x=width/2
+var y=height/2
+var Propnumber=3
+var CPN=0
+var hit=false
+var radius=10
+var name=prompt('Please enter you name','')
+var drawScore = function () {
+score=CPN-props.locations.length
+ctx.font = "20px Courier";
+ctx.fillStyle = "Black";
+ctx.textAlign = "left";
+ctx.textBaseline = "top";
+ctx.fillText("Score: " + score, blockSize, blockSize);
+};
+
+var drawName = function () {
+ctx.font = "20px Courier";
+ctx.fillStyle = "Black";
+ctx.textAlign = "right";
+ctx.textBaseline = "top";
+ctx.fillText("Name: " + name, blockSize*36, blockSize);
+};
+
+
+var gameOver = function () { clearInterval(intervalId);
+ctx.font = "60px Courier";
+ctx.fillStyle = "Black";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("Game Over", width / 2, height / 2);
+};
+
+var Location = function(x,y){
+	this.x=x;
+    this.y=y}
+
+Location.prototype.draw=function(){
+	ctx.fillStyle='Blue';
+	ctx.Rect(this.x,this.y,widthOfBar,heightOfBar);
+}
+var selectRandomLocation=function(){
+   var notenough=true
+   while(notenough){
+   notenough=false
+   var RandomX=Math.floor(Math.random()*350)
+   var RandomY=Math.floor(Math.random()*(-150))
+   var newElement
+	for (var i=0;i<barriers.bar.length;i++){
+		if (Math.abs(RandomX-barriers.bar[i].x)<80 && Math.abs(RandomY-barriers.bar[i].y)<40){notenough=true}
+    }
+   if (notenough===true){continue}
+   else{newElement= new Location(RandomX,RandomY);
+	barriers.bar.push(newElement);}
+}
+ }
+
+var Proplocation=function(x,y){
+	this.x=x
+	this.y=y
+}
+var Props=function(){
+	this.width=5
+	this.height=5
+	this.locations=[]
+}
+Props.prototype.SRL=function(){
+	for (var j=0;j<Propnumber;j++){
+    var rX=Math.floor(Math.random()*300)
+    var rY=Math.floor(Math.random()*(-100))
+    var newlocation
+    for (var i=0;i<barriers.bar.length;i++){
+    	var xNotHit = rX-barriers.bar[i].x>60 || barriers.bar[i].x-rX>15
+    	var yNotHit=rY-barriers.bar[i].y>15 || barriers.bar[i].y-rY>10
+    	if (xNotHit && yNotHit){}
+    	else {rY-=15;rX+=0;break}
+              }
+    	var newlocation=new Proplocation(rX,rY)
+    	this.locations.push(newlocation);CPN++
+    	
+    	    }
+ }
+ Props.prototype.draw=function(){
+	for (var i=0;i<this.locations.length;i++)
+	{ctx.fillRect(this.locations[i].x,this.locations[i].y,this.width,this.height)}
+
+ }
+ 
+ Props.prototype.checkhit=function(){
+	{
+for (var i=0;i<this.locations.length;i++){
+	var top=this.locations[i].y-5
+	var bottom=this.locations[i].y+10
+	var left=this.locations[i].x-5
+	var right=this.locations[i].x+10
+	if (top<ball.y && ball.y<bottom && left<ball.x && ball.x<right) 
+	{this.locations.splice(i,1)	
+	 
+	}
+}}
+ }
+ 
+ Props.prototype.move=function(){
+	for (var i=0;i<this.locations.length;i++){
+	this.locations[i].y+=barriers.speed
+	}
+ }
+ 
+
+var gameOver = function () { clearInterval(intervalId);
+ctx.font = "60px Courier";
+ctx.fillStyle = "Black";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText("Game Over", width / 2, height / 2);
+}; 
+
+
+
+var number=3
+
+var Barriers=function(){
+	this.bar=[new Location(20,-10),new Location(210,-70),new Location(300,-30)]//to store the location of bars
+	this.speed=0.8
+	this.minlastgroupY=0
+}
+
+Barriers.prototype.createRandomBarGroup=function(){
+	for (var j=0;j<number;j++){selectRandomLocation()}
+}
+
+Barriers.prototype.move=function(){
+	for (var i=0;i<this.bar.length;i++){
+    this.bar[i].y+=this.speed
+	}
+}
+
+Barriers.prototype.drawall=function(){
+	for (var i=0;i<this.bar.length;i++)
+		{ctx.fillStyle='Blue';ctx.fillRect(this.bar[i].x,this.bar[i].y,widthOfBar,heightOfBar)}
+}
+
+Barriers.prototype.checkdistance=function(){
+	this.minlastgroupY=this.bar[0].y
+	for (var i=0;i<this.bar.length;i++){
+		if (this.bar[i].y<=this.minlastgroupY){this.minlastgroupY=this.bar[i].y
+		}
+	}
+return this.minlastgroupY>0
+}
+
+var Ball=function(){
+	this.x=width/2
+	this.y=height
+}
+Ball.prototype.locate=function(x,y){
+	this.x=x
+	this.y=y
+}
+
+Ball.prototype.draw=function(){
+	ctx.beginPath();
+	ctx.arc(this.x,this.y,10,0,Math.PI*2,false)
+	ctx.fillStyle='Red'
+	ctx.fill()
+}
+var mousemove=function(e) {
+    x = e.clientX;
+    y = e.clientY;
+    if (x<0+radius){x=radius}
+    else if (x>width-radius){x=width-radius}
+    else if (y<0+radius){y=0+radius}
+    else if (y>height-radius){y=height-radius}
+    }
+
+var checkhitbar = function(){
+for (var i=0;i<barriers.bar.length;i++){
+	var top=barriers.bar[i].y-radius+1
+	var bottom=barriers.bar[i].y+radius+heightOfBar-1
+	var left=barriers.bar[i].x-radius+1
+	var right=barriers.bar[i].x+radius+widthOfBar-1
+	if (top<ball.y && ball.y<bottom && left<ball.x && ball.x<right) 
+	{hit=true}
+}}
+
+var ball=new Ball();
+var barriers=new Barriers();
+var props=new Props()
+
+$('body').keydown(function(){
+    var a=event.keyCode;
+    if (a>=49 && a<=57){
+    barriers.speed=0.2*0.1*parseInt(Speeds[event.keyCode])
+     }
+})
+alert('ATTENTION! Game will start immediately,please keep you mouse at the bottom, or you may easily fail')
+barriers.createRandomBarGroup()
+
+var intervalId=setInterval(function(){
+	ctx.clearRect(0,0,width,height)
+	if (barriers.checkdistance()){
+		barriers.createRandomBarGroup()
+		props.SRL()
+	}
+	props.draw()
+	props.checkhit()
+	barriers.drawall()
+    barriers.move()
+    props.move()
+    ball.locate(x,y)
+    ball.draw()
+    checkhitbar();
+    console.log(CPN,props.locations.length)
+   if (hit===true){gameOver();return}
+   drawScore();
+   drawName();
+    ctx.strokeRect(0,0,width,height)
+},1)
+
+</script>
+<p>Use mouse to move the ball to avoid barriers and capture the black blocks</p>
+<p>Use number keys to adjust the falling speed (defalut speed is 1)
+</body>
+</html>
